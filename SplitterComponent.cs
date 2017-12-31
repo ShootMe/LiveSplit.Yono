@@ -75,7 +75,7 @@ namespace LiveSplit.Yono {
 			if (currentSplit == -1) {
 				shouldSplit = mem.SceneName().Equals("MainMenu", StringComparison.OrdinalIgnoreCase) && mem.SaveDataCount() == 0;
 			} else if (Model.CurrentState.CurrentPhase == TimerPhase.Running) {
-				SplitName split = currentSplit + 1 < settings.Splits.Count ? settings.Splits[currentSplit + 1] : SplitName.EndGame;
+				SplitName split = currentSplit < settings.Splits.Count ? settings.Splits[currentSplit] : SplitName.EndGame;
 				string savedLocation = mem.SaveData("savedLocation(global)");
 				switch (split) {
 					case SplitName.Windhill:
