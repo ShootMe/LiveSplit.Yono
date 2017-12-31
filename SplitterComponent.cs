@@ -26,6 +26,7 @@ namespace LiveSplit.Yono {
 		private Dictionary<string, string> currentValues = new Dictionary<string, string>();
 		private SplitterSettings settings;
 		private string lastSavedLocation;
+		private int lastSaveCount = 1;
 		private bool isAutoSplit;
 #if !Info
 		public SplitterComponent(LiveSplitState state) {
@@ -73,7 +74,9 @@ namespace LiveSplit.Yono {
 			bool shouldSplit = false;
 
 			if (currentSplit == -1) {
-				shouldSplit = mem.SceneName().Equals("MainMenu", StringComparison.OrdinalIgnoreCase) && mem.SaveDataCount() == 0;
+				int saveDataCount = mem.SaveDataCount();
+				shouldSplit = mem.IsHooked && saveDataCount == 0 && lastSaveCount > 0;
+				lastSaveCount = saveDataCount;
 			} else if (Model.CurrentState.CurrentPhase == TimerPhase.Running) {
 				SplitName split = currentSplit < settings.Splits.Count ? settings.Splits[currentSplit] : SplitName.EndGame;
 				string savedLocation = mem.SaveData("savedLocation(global)");
@@ -91,7 +94,7 @@ namespace LiveSplit.Yono {
 						shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && savedLocation.Equals(split.ToString(), StringComparison.OrdinalIgnoreCase);
 						break;
 					case SplitName.Dungeon01:
-						shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && savedLocation.Length == 9 && savedLocation.StartsWith("Dungeon", StringComparison.OrdinalIgnoreCase) && !savedLocation.Equals("Dungeon23", StringComparison.OrdinalIgnoreCase);
+						shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && (savedLocation.Equals("Dungeon24", StringComparison.OrdinalIgnoreCase) || savedLocation.Equals(split.ToString(), StringComparison.OrdinalIgnoreCase));
 						break;
 					case SplitName.EndGame:
 						shouldSplit = mem.SceneName().Equals("ElephantRealm", StringComparison.OrdinalIgnoreCase) && !Model.CurrentState.IsGameTimePaused && mem.IsLoading();
