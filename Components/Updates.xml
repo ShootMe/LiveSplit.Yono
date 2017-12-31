@@ -1,5 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <updates>
+	<update version="1.1.0">
+		<files>
+			<file path="Components/LiveSplit.Yono.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change> Autosplitter Now Functions </change>
+		</changelog>
+	</update>
 	<update version="1.0.0">
 		<files>
 			<file path="Components/LiveSplit.Yono.dll" status="changed"/>

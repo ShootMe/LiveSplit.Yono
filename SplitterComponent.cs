@@ -19,12 +19,14 @@ namespace LiveSplit.Yono {
 		public string ComponentName { get { return "Yono and the Celestial Elephants Autosplitter"; } }
 		public IDictionary<string, Action> ContextMenuControls { get { return null; } }
 		private static string LOGFILE = "_Yono.log";
-		internal static string[] keys = { "CurrentSplit", "Loading", "SceneName" };
+		internal static string[] keys = { "CurrentSplit", "Loading", "SceneName", "SaveData" };
 		private SplitterMemory mem;
 		private int currentSplit = -1, lastLogCheck = 0;
 		private bool hasLog = false;
 		private Dictionary<string, string> currentValues = new Dictionary<string, string>();
 		private SplitterSettings settings;
+		private string lastSavedLocation;
+		private bool isAutoSplit;
 #if !Info
 		public SplitterComponent(LiveSplitState state) {
 #else
@@ -53,7 +55,10 @@ namespace LiveSplit.Yono {
 		}
 
 		public void GetValues() {
-			if (!mem.HookProcess()) { return; }
+			if (!mem.HookProcess()) {
+				Model.CurrentState.IsGameTimePaused = true;
+				return;
+			}
 
 #if !Info
 			if (Model != null) {
@@ -68,16 +73,35 @@ namespace LiveSplit.Yono {
 			bool shouldSplit = false;
 
 			if (currentSplit == -1) {
-				shouldSplit = false;
+				shouldSplit = mem.SceneName().Equals("MainMenu", StringComparison.OrdinalIgnoreCase) && mem.SaveDataCount() == 0;
 			} else if (Model.CurrentState.CurrentPhase == TimerPhase.Running) {
 				SplitName split = currentSplit + 1 < settings.Splits.Count ? settings.Splits[currentSplit + 1] : SplitName.EndGame;
+				string savedLocation = mem.SaveData("savedLocation(global)");
 				switch (split) {
-					case SplitName.EndGame: shouldSplit = false; break;
+					case SplitName.Windhill:
+					case SplitName.Hedgehod_Forest_Start:
+					case SplitName.Knightingale_Square:
+					case SplitName.Trollmoss01:
+					case SplitName.Sundergarden:
+					case SplitName.Acorn01:
+					case SplitName.Woolly01:
+					case SplitName.Dungeon01:
+					case SplitName.Dungeon23:
+					case SplitName.Knight_Prison:
+					case SplitName.ElephantRealm:
+						shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && savedLocation.Equals(split.ToString(), StringComparison.OrdinalIgnoreCase);
+						break;
+					case SplitName.EndGame:
+						shouldSplit = mem.SceneName().Equals("ElephantRealm", StringComparison.OrdinalIgnoreCase) && !Model.CurrentState.IsGameTimePaused && mem.IsLoading();
+						if (shouldSplit) {
+							isAutoSplit = true;
+						}
+						break;
 				}
+				lastSavedLocation = savedLocation;
 			}
 
 			Model.CurrentState.IsGameTimePaused = mem.IsLoading();
-
 			HandleSplit(shouldSplit, false);
 		}
 		private void HandleSplit(bool shouldSplit, bool shouldReset = false) {
@@ -97,10 +121,6 @@ namespace LiveSplit.Yono {
 		private void LogValues() {
 			if (lastLogCheck == 0) {
 				hasLog = File.Exists(LOGFILE);
-				if (!hasLog) {
-					File.WriteAllText(LOGFILE, "");
-					hasLog = true;
-				}
 				lastLogCheck = 300;
 			}
 			lastLogCheck--;
@@ -114,17 +134,32 @@ namespace LiveSplit.Yono {
 						case "CurrentSplit": curr = currentSplit.ToString(); break;
 						case "Loading": curr = mem.IsLoading().ToString(); break;
 						case "SceneName": curr = mem.SceneName(); break;
+						case "SaveData":
+							List<SaveData> data = mem.SaveData();
+							for (int i = 0; i < data.Count; i++) {
+								SaveData rs = data[i];
+								string temp;
+								if (!currentValues.TryGetValue(rs.Key, out temp)) {
+									temp = string.Empty;
+								}
+								CompareAndLog(rs.Key, rs.Value, temp);
+							}
+							curr = data.Count.ToString();
+							break;
 						default: curr = string.Empty; break;
 					}
 
-					if (prev == null) { prev = string.Empty; }
-					if (curr == null) { curr = string.Empty; }
-					if (!prev.Equals(curr)) {
-						WriteLogWithTime(key + ": ".PadRight(16 - key.Length, ' ') + prev.PadLeft(25, ' ') + " -> " + curr);
-
-						currentValues[key] = curr;
-					}
+					CompareAndLog(key, curr, prev);
 				}
+			}
+		}
+		private void CompareAndLog(string key, string current, string previous) {
+			if (previous == null) { previous = string.Empty; }
+			if (current == null) { current = string.Empty; }
+			if (!previous.Equals(current)) {
+				WriteLogWithTime(key + ": ".PadRight(Math.Max(0, 16 - key.Length), ' ') + previous.PadLeft(25, ' ') + " -> " + current);
+
+				currentValues[key] = current;
 			}
 		}
 		private void WriteLog(string data) {
@@ -167,6 +202,7 @@ namespace LiveSplit.Yono {
 
 		public void OnReset(object sender, TimerPhase e) {
 			currentSplit = -1;
+			isAutoSplit = false;
 			Model.CurrentState.IsGameTimePaused = true;
 			WriteLog("---------Reset----------------------------------");
 		}
@@ -178,6 +214,7 @@ namespace LiveSplit.Yono {
 		}
 		public void OnStart(object sender, EventArgs e) {
 			currentSplit = 0;
+			isAutoSplit = false;
 			Model.CurrentState.IsGameTimePaused = true;
 			Model.CurrentState.SetGameTime(TimeSpan.FromSeconds(0));
 			WriteLog("---------New Game-------------------------------");
@@ -190,6 +227,12 @@ namespace LiveSplit.Yono {
 		}
 		public void OnSplit(object sender, EventArgs e) {
 			currentSplit++;
+			if (isAutoSplit) {
+				try {
+					ISegment segment = Model.CurrentState.Run[Model.CurrentState.Run.Count - 1];
+					segment.SplitTime = new Time(segment.SplitTime.RealTime.Value.Subtract(TimeSpan.FromSeconds(5.1)), segment.SplitTime.GameTime.Value.Subtract(TimeSpan.FromSeconds(5.1)));
+				} catch { }
+			}
 		}
 		public Control GetSettingsControl(LayoutMode mode) { return settings; }
 		public void SetSettings(XmlNode document) { settings.SetSettings(document); }
