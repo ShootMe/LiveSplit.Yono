@@ -85,11 +85,13 @@ namespace LiveSplit.Yono {
 					case SplitName.Sundergarden:
 					case SplitName.Acorn01:
 					case SplitName.Woolly01:
-					case SplitName.Dungeon01:
 					case SplitName.Dungeon23:
 					case SplitName.Knight_Prison:
 					case SplitName.ElephantRealm:
 						shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && savedLocation.Equals(split.ToString(), StringComparison.OrdinalIgnoreCase);
+						break;
+					case SplitName.Dungeon01:
+						shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && savedLocation.Length == 9 && savedLocation.StartsWith("Dungeon", StringComparison.OrdinalIgnoreCase) && !savedLocation.Equals("Dungeon23", StringComparison.OrdinalIgnoreCase);
 						break;
 					case SplitName.EndGame:
 						shouldSplit = mem.SceneName().Equals("ElephantRealm", StringComparison.OrdinalIgnoreCase) && !Model.CurrentState.IsGameTimePaused && mem.IsLoading();
