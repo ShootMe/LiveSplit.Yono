@@ -91,7 +91,7 @@ namespace LiveSplit.Yono {
 			}
 		}
 		public bool IsLoading() {
-			return !IsHooked || SceneManager.Read<int>(Program, 0xc) > 1;
+			return !IsHooked || SceneManager.Read<int>(Program, 0xc) > 1 || SceneManager.Read<int>(Program, 0x20) > 1;
 		}
 		public string SceneName() {
 			string name = SceneManager.Read(Program, (IntPtr)(SceneManager.Read<uint>(Program, 0x14, 0x20)));
