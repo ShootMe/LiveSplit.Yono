@@ -75,24 +75,12 @@ namespace LiveSplit.Yono {
 
 			if (currentSplit == -1) {
 				int saveDataCount = mem.SaveDataCount();
-				shouldSplit = mem.IsHooked && saveDataCount == 0 && lastSaveCount > 0;
+				shouldSplit = mem.IsHooked && saveDataCount == 0 && lastSaveCount > 0 && !string.IsNullOrEmpty(mem.SceneName());
 				lastSaveCount = saveDataCount;
 			} else if (Model.CurrentState.CurrentPhase == TimerPhase.Running) {
 				SplitName split = currentSplit < settings.Splits.Count ? settings.Splits[currentSplit] : SplitName.EndGame;
 				string savedLocation = mem.SaveData("savedLocation(global)");
 				switch (split) {
-					case SplitName.Windhill:
-					case SplitName.Hedgehod_Forest_Start:
-					case SplitName.Knightingale_Square:
-					case SplitName.Trollmoss01:
-					case SplitName.Sundergarden:
-					case SplitName.Acorn01:
-					case SplitName.Woolly01:
-					case SplitName.Dungeon23:
-					case SplitName.Knight_Prison:
-					case SplitName.ElephantRealm:
-						shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && savedLocation.Equals(split.ToString(), StringComparison.OrdinalIgnoreCase);
-						break;
 					case SplitName.Dungeon01:
 						shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && (savedLocation.Equals("Dungeon24", StringComparison.OrdinalIgnoreCase) || savedLocation.Equals(split.ToString(), StringComparison.OrdinalIgnoreCase));
 						break;
@@ -101,6 +89,9 @@ namespace LiveSplit.Yono {
 						if (shouldSplit) {
 							isAutoSplit = true;
 						}
+						break;
+					default:
+						shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && savedLocation.Equals(split.ToString(), StringComparison.OrdinalIgnoreCase);
 						break;
 				}
 				lastSavedLocation = savedLocation;
