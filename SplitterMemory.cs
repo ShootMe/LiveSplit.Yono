@@ -5,6 +5,7 @@ namespace LiveSplit.Yono {
 	public class SplitterMemory {
 		private static ProgramPointer SceneManager = new ProgramPointer(AutoDeref.Double, new ProgramSignature(PointerVersion.V1, "8B0D????????568BF185C974088B018B106A00FFD26A5856E8", 2));
 		private static ProgramPointer GlobalSaveData = new ProgramPointer(AutoDeref.Single, new ProgramSignature(PointerVersion.V1, "893883EC0C57E8????????83C41083EC0C50E8????????83C4108B4714", -4));
+		private static ProgramPointer PhantBlinking = new ProgramPointer(AutoDeref.None, 0xeab540);
 		public Process Program { get; set; }
 		public bool IsHooked { get; set; } = false;
 		private DateTime lastHooked;
@@ -13,6 +14,27 @@ namespace LiveSplit.Yono {
 			lastHooked = DateTime.MinValue;
 		}
 
+		public EyeType Eyes() {
+			float eyes = PhantBlinking.Read<float>(Program, 0x44, 0x14);
+			if (eyes < 0.2) {
+				return EyeType.Normal;
+			} else if (eyes < 0.4) {
+				return EyeType.Closed;
+			} else if (eyes < 0.7) {
+				return EyeType.Happy;
+			}
+			return EyeType.Dead;
+		}
+		public void SetEyes(EyeType eyes) {
+			PhantBlinking.Write<float>(Program, 99999999f, 0x44, 0x1c);
+			float offset = 0;
+			switch (eyes) {
+				case EyeType.Closed: offset = 0.25f; break;
+				case EyeType.Happy: offset = 0.5f; break;
+				case EyeType.Dead: offset = 0.75f; break;
+			}
+			PhantBlinking.Write<float>(Program, offset, 0x44, 0x14);
+		}
 		public int SaveDataCount() {
 			return GlobalSaveData.Read<int>(Program, 0x0, 0x10, 0x8, 0xc);
 		}

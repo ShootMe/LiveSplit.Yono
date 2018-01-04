@@ -50,6 +50,12 @@ namespace LiveSplit.Yono {
 		[Description("End Game"), ToolTip("Splits when ending the game")]
 		EndGame,
 	}
+	public enum EyeType {
+		Normal,
+		Closed,
+		Happy,
+		Dead
+	}
 	public class SaveData {
 		public string Key, Value;
 		public override string ToString() {

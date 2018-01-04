@@ -62,6 +62,12 @@ namespace LiveSplit.Yono {
 			}
 
 #if !Info
+			if (settings.Eyes != EyeType.Normal) {
+				EyeType eyes = mem.Eyes();
+				if (eyes != settings.Eyes) {
+					mem.SetEyes(settings.Eyes);
+				}
+			}
 			if (Model != null) {
 				HandleSplits();
 			}

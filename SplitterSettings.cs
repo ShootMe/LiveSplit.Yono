@@ -8,12 +8,14 @@ using System.Xml;
 namespace LiveSplit.Yono {
 	public partial class SplitterSettings : UserControl {
 		public List<SplitName> Splits { get; private set; }
+		public EyeType Eyes { get; set; }
 		private bool isLoading;
 		public SplitterSettings() {
 			isLoading = true;
 			InitializeComponent();
 
 			Splits = new List<SplitName>();
+			Eyes = EyeType.Normal;
 			isLoading = false;
 		}
 
@@ -43,6 +45,8 @@ namespace LiveSplit.Yono {
 
 				flowMain.Controls.Add(setting);
 			}
+
+			cboEyes.SelectedItem = Eyes.ToString();
 
 			isLoading = false;
 			this.flowMain.ResumeLayout(true);
@@ -82,9 +86,18 @@ namespace LiveSplit.Yono {
 					}
 				}
 			}
+
+			EyeType eyes;
+			if (Enum.TryParse<EyeType>(cboEyes.Text, out eyes)) {
+				Eyes = eyes;
+			}
 		}
 		public XmlNode UpdateSettings(XmlDocument document) {
 			XmlElement xmlSettings = document.CreateElement("Settings");
+
+			XmlElement xmlEyes = document.CreateElement("Eyes");
+			xmlEyes.InnerText = Eyes.ToString();
+			xmlSettings.AppendChild(xmlEyes);
 
 			XmlElement xmlSplits = document.CreateElement("Splits");
 			xmlSettings.AppendChild(xmlSplits);
@@ -99,6 +112,16 @@ namespace LiveSplit.Yono {
 			return xmlSettings;
 		}
 		public void SetSettings(XmlNode settings) {
+			XmlNode eyes = settings.SelectSingleNode(".//Eyes");
+			if (eyes != null && !string.IsNullOrEmpty(eyes.InnerText)) {
+				EyeType eyeType;
+				if (Enum.TryParse<EyeType>(eyes.InnerText, out eyeType)) {
+					Eyes = eyeType;
+				}
+			} else {
+				Eyes = EyeType.Normal;
+			}
+
 			Splits.Clear();
 			XmlNodeList splitNodes = settings.SelectNodes(".//Splits/Split");
 			foreach (XmlNode splitNode in splitNodes) {
@@ -163,6 +186,9 @@ namespace LiveSplit.Yono {
 					destination.Invalidate();
 				}
 			}
+		}
+		private void cboEyes_SelectedIndexChanged(object sender, EventArgs e) {
+			UpdateSplits();
 		}
 	}
 }
