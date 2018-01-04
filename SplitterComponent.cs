@@ -26,7 +26,7 @@ namespace LiveSplit.Yono {
 		private Dictionary<string, string> currentValues = new Dictionary<string, string>();
 		private SplitterSettings settings;
 		private string lastSavedLocation;
-		private int lastSaveCount = 1;
+		private int lastSaveCount, lastHealthTokens;
 		private bool isAutoSplit;
 #if !Info
 		public SplitterComponent(LiveSplitState state) {
@@ -75,30 +75,44 @@ namespace LiveSplit.Yono {
 
 			if (currentSplit == -1) {
 				int saveDataCount = mem.SaveDataCount();
-				shouldSplit = mem.IsHooked && saveDataCount == 0 && lastSaveCount > 0 && !string.IsNullOrEmpty(mem.SceneName());
+				shouldSplit = saveDataCount == 0 && lastSaveCount > 0 && !string.IsNullOrEmpty(mem.SceneName());
 				lastSaveCount = saveDataCount;
 			} else if (Model.CurrentState.CurrentPhase == TimerPhase.Running) {
 				SplitName split = currentSplit < settings.Splits.Count ? settings.Splits[currentSplit] : SplitName.EndGame;
-				string savedLocation = mem.SaveData("savedLocation(global)");
-				switch (split) {
-					case SplitName.Dungeon01:
-						shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && (savedLocation.Equals("Dungeon24", StringComparison.OrdinalIgnoreCase) || savedLocation.Equals(split.ToString(), StringComparison.OrdinalIgnoreCase));
-						break;
-					case SplitName.EndGame:
-						shouldSplit = mem.SceneName().Equals("ElephantRealm", StringComparison.OrdinalIgnoreCase) && !Model.CurrentState.IsGameTimePaused && mem.IsLoading();
-						if (shouldSplit) {
-							isAutoSplit = true;
-						}
-						break;
-					default:
-						shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && savedLocation.Equals(split.ToString(), StringComparison.OrdinalIgnoreCase);
-						break;
+				if (split == SplitName.HealthToken) {
+					int healthTokens = GetHealthTokens();
+					shouldSplit = healthTokens > lastHealthTokens;
+					lastHealthTokens = healthTokens;
+				} else {
+					string savedLocation = mem.SaveData("savedLocation(global)");
+					switch (split) {
+						case SplitName.Dungeon01:
+							shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && (savedLocation.Equals("Dungeon24", StringComparison.OrdinalIgnoreCase) || savedLocation.Equals(split.ToString(), StringComparison.OrdinalIgnoreCase));
+							break;
+						case SplitName.EndGame:
+							shouldSplit = mem.SceneName().Equals("ElephantRealm", StringComparison.OrdinalIgnoreCase) && !Model.CurrentState.IsGameTimePaused && mem.IsLoading();
+							if (shouldSplit) {
+								isAutoSplit = true;
+							}
+							break;
+						default:
+							shouldSplit = !savedLocation.Equals(lastSavedLocation, StringComparison.OrdinalIgnoreCase) && savedLocation.Equals(split.ToString(), StringComparison.OrdinalIgnoreCase);
+							break;
+					}
+					lastSavedLocation = savedLocation;
 				}
-				lastSavedLocation = savedLocation;
 			}
 
 			Model.CurrentState.IsGameTimePaused = mem.IsLoading();
 			HandleSplit(shouldSplit, false);
+		}
+		private int GetHealthTokens() {
+			string tokens = mem.SaveData("phantTokens(global)");
+			int healthTokens;
+			if (!int.TryParse(tokens, out healthTokens)) {
+				healthTokens = 0;
+			}
+			return healthTokens;
 		}
 		private void HandleSplit(bool shouldSplit, bool shouldReset = false) {
 			if (shouldReset) {
@@ -217,9 +231,13 @@ namespace LiveSplit.Yono {
 		}
 		public void OnUndoSplit(object sender, EventArgs e) {
 			currentSplit--;
+			lastHealthTokens = GetHealthTokens();
+			lastSavedLocation = mem.SaveData("savedLocation(global)");
 		}
 		public void OnSkipSplit(object sender, EventArgs e) {
 			currentSplit++;
+			lastHealthTokens = GetHealthTokens();
+			lastSavedLocation = mem.SaveData("savedLocation(global)");
 		}
 		public void OnSplit(object sender, EventArgs e) {
 			currentSplit++;
@@ -229,6 +247,8 @@ namespace LiveSplit.Yono {
 					segment.SplitTime = new Time(segment.SplitTime.RealTime.Value.Subtract(TimeSpan.FromSeconds(5.1)), segment.SplitTime.GameTime.Value.Subtract(TimeSpan.FromSeconds(5.1)));
 				} catch { }
 			}
+			lastHealthTokens = GetHealthTokens();
+			lastSavedLocation = mem.SaveData("savedLocation(global)");
 		}
 		public Control GetSettingsControl(LayoutMode mode) { return settings; }
 		public void SetSettings(XmlNode document) { settings.SetSettings(document); }

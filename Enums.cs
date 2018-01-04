@@ -49,6 +49,8 @@ namespace LiveSplit.Yono {
 		ElephantRealm,
 		[Description("End Game"), ToolTip("Splits when ending the game")]
 		EndGame,
+		[Description("Health Token (Pickup)"), ToolTip("Splits when picking up a new Health Token")]
+		HealthToken,
 	}
 	public enum EyeType {
 		Normal,
