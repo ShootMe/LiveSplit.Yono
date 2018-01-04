@@ -29,8 +29,6 @@
 			this.lblSort = new System.Windows.Forms.Label();
 			this.rdType = new System.Windows.Forms.RadioButton();
 			this.rdAlpha = new System.Windows.Forms.RadioButton();
-			this.lblEyes = new System.Windows.Forms.Label();
-			this.cboEyes = new System.Windows.Forms.ComboBox();
 			this.flowMain.SuspendLayout();
 			this.flowOptions.SuspendLayout();
 			this.SuspendLayout();
@@ -56,7 +54,7 @@
 			this.flowMain.Location = new System.Drawing.Point(0, 0);
 			this.flowMain.Margin = new System.Windows.Forms.Padding(0);
 			this.flowMain.Name = "flowMain";
-			this.flowMain.Size = new System.Drawing.Size(406, 27);
+			this.flowMain.Size = new System.Drawing.Size(287, 27);
 			this.flowMain.TabIndex = 0;
 			this.flowMain.WrapContents = false;
 			this.flowMain.DragDrop += new System.Windows.Forms.DragEventHandler(this.flowMain_DragDrop);
@@ -70,12 +68,10 @@
 			this.flowOptions.Controls.Add(this.lblSort);
 			this.flowOptions.Controls.Add(this.rdType);
 			this.flowOptions.Controls.Add(this.rdAlpha);
-			this.flowOptions.Controls.Add(this.lblEyes);
-			this.flowOptions.Controls.Add(this.cboEyes);
 			this.flowOptions.Location = new System.Drawing.Point(0, 0);
 			this.flowOptions.Margin = new System.Windows.Forms.Padding(0);
 			this.flowOptions.Name = "flowOptions";
-			this.flowOptions.Size = new System.Drawing.Size(406, 27);
+			this.flowOptions.Size = new System.Drawing.Size(287, 27);
 			this.flowOptions.TabIndex = 0;
 			// 
 			// lblSort
@@ -111,30 +107,6 @@
 			this.rdAlpha.UseVisualStyleBackColor = true;
 			this.rdAlpha.CheckedChanged += new System.EventHandler(this.radio_CheckedChanged);
 			// 
-			// lblEyes
-			// 
-			this.lblEyes.Location = new System.Drawing.Point(290, 0);
-			this.lblEyes.Name = "lblEyes";
-			this.lblEyes.Size = new System.Drawing.Size(35, 24);
-			this.lblEyes.TabIndex = 5;
-			this.lblEyes.Text = "Eyes:";
-			this.lblEyes.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// cboEyes
-			// 
-			this.cboEyes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboEyes.FormattingEnabled = true;
-			this.cboEyes.Items.AddRange(new object[] {
-            "Normal",
-            "Closed",
-            "Happy",
-            "Dead"});
-			this.cboEyes.Location = new System.Drawing.Point(331, 3);
-			this.cboEyes.Name = "cboEyes";
-			this.cboEyes.Size = new System.Drawing.Size(72, 21);
-			this.cboEyes.TabIndex = 4;
-			this.cboEyes.SelectedIndexChanged += new System.EventHandler(this.cboEyes_SelectedIndexChanged);
-			// 
 			// SplitterSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -145,7 +117,7 @@
 			this.Controls.Add(this.flowMain);
 			this.Margin = new System.Windows.Forms.Padding(0);
 			this.Name = "SplitterSettings";
-			this.Size = new System.Drawing.Size(406, 27);
+			this.Size = new System.Drawing.Size(287, 27);
 			this.Load += new System.EventHandler(this.Settings_Load);
 			this.flowMain.ResumeLayout(false);
 			this.flowMain.PerformLayout();
@@ -163,7 +135,5 @@
 		private System.Windows.Forms.Label lblSort;
 		private System.Windows.Forms.RadioButton rdType;
 		private System.Windows.Forms.RadioButton rdAlpha;
-		private System.Windows.Forms.Label lblEyes;
-		private System.Windows.Forms.ComboBox cboEyes;
 	}
 }
