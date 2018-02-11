@@ -244,7 +244,7 @@ namespace LiveSplit.Yono {
 			if (isAutoSplit) {
 				try {
 					ISegment segment = Model.CurrentState.Run[Model.CurrentState.Run.Count - 1];
-					segment.SplitTime = new Time(segment.SplitTime.RealTime.Value.Subtract(TimeSpan.FromSeconds(5.1)), segment.SplitTime.GameTime.Value.Subtract(TimeSpan.FromSeconds(5.1)));
+					segment.SplitTime = new Time(Model.CurrentState.CurrentTime.RealTime.Value.Subtract(TimeSpan.FromSeconds(5.1)), Model.CurrentState.CurrentTime.GameTime.Value.Subtract(TimeSpan.FromSeconds(5.1)));
 				} catch { }
 			}
 			lastHealthTokens = GetHealthTokens();

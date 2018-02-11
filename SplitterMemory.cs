@@ -106,7 +106,7 @@ namespace LiveSplit.Yono {
 				lastHooked = DateTime.Now;
 				Process[] processes = Process.GetProcessesByName("Yono and the Celestial Elephants");
 				Program = processes.Length == 0 ? null : processes[0];
-				if (Program != null) {
+				if (Program != null && !Program.HasExited) {
 					MemoryReader.Update64Bit(Program);
 					IsHooked = true;
 				}
