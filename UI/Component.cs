@@ -159,7 +159,7 @@ namespace LiveSplit.Yono {
                 log.AddEntry(new EventLogEntry($"Split Manual {Model.CurrentState.CurrentTime.RealTime.Value}"));
             } else {
                 log.AddEntry(new EventLogEntry($"Split Auto {Model.CurrentState.CurrentTime.RealTime.Value}"));
-                if (Model.CurrentState.CurrentSplitIndex == Model.CurrentState.Run.Count - 1) {
+                if (logic.CurrentSplit > Model.CurrentState.Run.Count) {
                     try {
                         ISegment segment = Model.CurrentState.Run[Model.CurrentState.Run.Count - 1];
                         segment.SplitTime = new Time(Model.CurrentState.CurrentTime.RealTime.Value.Subtract(TimeSpan.FromSeconds(5.1)), Model.CurrentState.CurrentTime.GameTime.Value.Subtract(TimeSpan.FromSeconds(5.1)));
