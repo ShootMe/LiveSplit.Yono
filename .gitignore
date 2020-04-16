@@ -2,8 +2,8 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs
 /bin
 /Components/LiveSplit.Yono.exe
+/.vs
 /obj
 /LiveSplit.Yono.csproj.user

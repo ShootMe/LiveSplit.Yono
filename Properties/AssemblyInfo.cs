@@ -1,5 +1,7 @@
 ﻿using LiveSplit.Yono;
+#if !Console
 using LiveSplit.UI.Components;
+#endif
 using System.Reflection;
 using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("LiveSplit.Yono")]
@@ -7,13 +9,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("LiveSplit.Yono")]
-[assembly: AssemblyCopyright("Copyright © 2017")]
+[assembly: AssemblyCopyright("Copyright © 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
-[assembly: Guid("d00e8287-0d53-4cdc-beeb-5a0ed1908711")]
-[assembly: AssemblyVersion("1.2.0.0")]
-[assembly: AssemblyFileVersion("1.2.0.0")]
-#if !Info
-[assembly: ComponentFactory(typeof(SplitterFactory))]
-#endif
+[assembly: Guid("b3294e28-2bd4-4e39-92fa-e04a620d7eaf")]
+[assembly: AssemblyVersion("1.2.1.0")]
+[assembly: AssemblyFileVersion("1.2.1.0")]
+[assembly: ComponentFactory(typeof(Factory))]

@@ -1,13 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <updates>
-	<update version="1.2.0">
-		<files>
-			<file path="Components/LiveSplit.Yono.dll" status="changed"/>
-		</files>
-		<changelog>
-			<change> Possible Fix For Negative Final Split Time </change>
-		</changelog>
-	</update>
+    <update version="1.2.1">
+        <files>
+            <file path="Components/LiveSplit.Yono.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change> Improve autosplitter and settings </change>
+        </changelog>
+    </update>
+    <update version="1.2.0">
+        <files>
+            <file path="Components/LiveSplit.Yono.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change> Possible Fix For Negative Final Split Time </change>
+        </changelog>
+    </update>
 	<update version="1.1.9">
 		<files>
 			<file path="Components/LiveSplit.Yono.dll" status="changed"/>
