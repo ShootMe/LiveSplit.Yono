@@ -105,12 +105,12 @@ namespace LiveSplit.Yono {
     }
     public class FindPointerSignature : IFindPointer {
         public PointerVersion Version { get; private set; }
-        private AutoDeref AutoDeref;
-        private string Signature;
+        private readonly AutoDeref AutoDeref;
+        private readonly string Signature;
+        private readonly MemorySearcher Searcher;
+        private readonly int[] Relative;
         private IntPtr BasePtr;
-        private MemorySearcher Searcher;
         private DateTime LastVerified;
-        private int[] Relative;
 
         public FindPointerSignature(PointerVersion version, AutoDeref autoDeref, string signature, params int[] relative) {
             Version = version;
