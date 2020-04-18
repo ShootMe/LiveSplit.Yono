@@ -118,7 +118,7 @@ namespace LiveSplit.Yono {
             lastIntValue = saveDataCount;
         }
         private void CheckGameEnd() {
-            ShouldSplit = Paused && !lastBoolValue && Memory.SceneName() == "ElephantRealm";
+            ShouldSplit = Paused && !lastBoolValue && "ElephantRealm".Equals(Memory.SceneName(), StringComparison.OrdinalIgnoreCase);
             lastBoolValue = Paused;
         }
         private void CheckHealthTokens() {

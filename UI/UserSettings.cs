@@ -88,7 +88,7 @@ namespace LiveSplit.Yono {
         }
         private void Settings_Load(object sender, EventArgs e) {
             Form form = FindForm();
-            form.Text = "Ape Out v" + Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+            form.Text = "Yono and the Celestial Elephants v" + Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 
             FixSplits();
         }
