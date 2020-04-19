@@ -139,10 +139,12 @@ namespace LiveSplit.Yono {
                 case SplitArea.Sundergarden: CheckScene(enter, "Sundergarden"); break;
                 case SplitArea.Crypt01: CheckScene(enter, "Crypt01"); break;
                 case SplitArea.Crypt10: CheckScene(enter, "Crypt10"); break;
+                case SplitArea.Crypt24: CheckScene(enter, "Crypt24"); break;
                 case SplitArea.Acorn01: CheckScene(enter, "Acorn01"); break;
                 case SplitArea.Freehaven: CheckScene(enter, "Freehaven"); break;
                 case SplitArea.Factory01: CheckScene(enter, "Factory01"); break;
                 case SplitArea.Factory06: CheckScene(enter, "Factory06"); break;
+                case SplitArea.Factory23: CheckScene(enter, "Factory23"); break;
                 case SplitArea.Woolly01: CheckScene(enter, "Woolly01"); break;
                 case SplitArea.Woolly05: CheckScene(enter, "Woolly05"); break;
                 case SplitArea.Dungeon01: CheckScene(enter, "Dungeon01", "Dungeon24"); break;
