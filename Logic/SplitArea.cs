@@ -21,6 +21,8 @@ namespace LiveSplit.Yono {
         Crypt01,
         [Description("Maggot's Keep Boat Room")]
         Crypt10,
+        [Description("Maggot's Keep Guardian Arena")]
+        Crypt24,
         [Description("Acorn Woods")]
         Acorn01,
         [Description("Freehaven")]
@@ -29,6 +31,8 @@ namespace LiveSplit.Yono {
         Factory01,
         [Description("Manufactoria Hub")]
         Factory06,
+        [Description("Robot Dog Arena")]
+        Factory23,
         [Description("Woolly Mountain")]
         Woolly01,
         [Description("Woolly Halfway")]
